@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>八字运势 - 传统命理分析</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;500;600;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #2F1B14 0%, #3D2317 50%, #4A2C1A 100%);
+            color: #F5DEB3;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 背景装饰 - 八卦图案 */
+        .bagua-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.03;
+        }
+
+        .bagua-symbol {
+            position: absolute;
+            font-size: 8rem;
+            color: #8B4513;
+            animation: rotate-slow 60s linear infinite;
+        }
+
+        .bagua-1 { top: 10%; left: 10%; animation-delay: 0s; }
+        .bagua-2 { top: 20%; right: 15%; animation-delay: -20s; }
+        .bagua-3 { bottom: 30%; left: 20%; animation-delay: -40s; }
+        .bagua-4 { bottom: 15%; right: 10%; animation-delay: -10s; }
+
+        @keyframes rotate-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 头部 */
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 3rem 0;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #8B4513, transparent);
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #8B4513, transparent);
+        }
+
+        .main-title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 4rem;
+            font-weight: 400;
+            color: #CD853F;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .main-title::before {
+            content: '☯';
+            position: absolute;
+            left: -80px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: #B8860B;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .main-title::after {
+            content: '☯';
+            position: absolute;
+            right: -80px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: #B8860B;
+            animation: pulse 3s ease-in-out infinite reverse;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: translateY(-50%) scale(1); }
+            50% { opacity: 1; transform: translateY(-50%) scale(1.1); }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #A0522D;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: #D2B48C;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 八字输入卡片 */
+        .bazi-input-card {
+            background: rgba(139, 69, 19, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bazi-input-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(205, 133, 63, 0.05) 0%, transparent 70%);
+            animation: rotate-bg 20s linear infinite;
+        }
+
+        @keyframes rotate-bg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.2rem;
+            color: #CD853F;
+            margin-bottom: 1rem;
+            position: relative;
+            font-weight: 400;
+            letter-spacing: 3px;
+        }
+
+        .card-title::before {
+            content: '◆ ◇ ◆';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            color: #8B4513;
+            letter-spacing: 8px;
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        .card-description {
+            color: #D2B48C;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        /* 输入表单 */
+        .input-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            text-align: left;
+        }
+
+        /* 时间输入组样式 */
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .time-input-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .time-sub-label {
+            color: #8B4513;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        /* 地点输入组样式 */
+        .location-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .location-input-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .location-sub-label {
+            color: #8B4513;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .input-label {
+            display: block;
+            color: #A0522D;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        /* 时间标题和提示在同一行 */
+        .time-label-row {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .time-main-label {
+            color: #A0522D;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .time-hint-inline {
+            font-size: 0.8rem;
+            color: #A0522D;
+            opacity: 0.8;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            border-radius: 10px;
+            background: rgba(245, 222, 179, 0.1);
+            color: #F5DEB3;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #CD853F;
+            background: rgba(245, 222, 179, 0.15);
+            box-shadow: 0 0 15px rgba(205, 133, 63, 0.2);
+        }
+
+        .input-field::placeholder {
+            color: rgba(245, 222, 179, 0.5);
+        }
+
+        /* 错误状态样式 */
+        .input-field.error {
+            border-color: #DC143C;
+            background: rgba(220, 20, 60, 0.1);
+            box-shadow: 0 0 10px rgba(220, 20, 60, 0.3);
+        }
+
+        .input-field.error:focus {
+            border-color: #DC143C;
+            box-shadow: 0 0 15px rgba(220, 20, 60, 0.4);
+        }
+
+        /* 时间提示文字 */
+        .time-hint {
+            font-size: 0.8rem;
+            color: #A0522D;
+            margin-top: 0.3rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        /* 按钮 */
+        .generate-btn {
+            background: linear-gradient(45deg, #8B4513, #A0522D);
+            color: #F5DEB3;
+            border: none;
+            padding: 1.2rem 3rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            font-family: 'Noto Serif SC', serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: none;
+            letter-spacing: 2px;
+        }
+
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .generate-btn:hover::before {
+            left: 100%;
+        }
+
+        .generate-btn:hover {
+            background: linear-gradient(45deg, #A0522D, #CD853F);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 69, 19, 0.3);
+        }
+
+        /* 结果显示区域 */
+        .result-area {
+            display: none;
+            background: rgba(160, 82, 45, 0.1);
+            border: 2px solid rgba(160, 82, 45, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 3rem;
+            position: relative;
+        }
+
+        .result-title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.5rem;
+            color: #CD853F;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .basic-info {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(139, 69, 19, 0.1);
+            border-radius: 10px;
+        }
+
+        .bazi-display {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .bazi-pillar {
+            background: rgba(139, 69, 19, 0.2);
+            border: 1px solid rgba(139, 69, 19, 0.4);
+            border-radius: 10px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+        }
+
+        .pillar-title {
+            color: #A0522D;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .pillar-chars {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .heavenly-stem, .earthly-branch {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #CD853F;
+        }
+
+        /* 流日分析样式 */
+        .liuri-analysis {
+            background: rgba(160, 82, 45, 0.1);
+            border: 2px solid rgba(160, 82, 45, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .liuri-title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 1.8rem;
+            color: #CD853F;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .liuri-title::before {
+            content: '◆';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8B4513;
+            font-size: 1rem;
+        }
+
+        .liuri-title::after {
+            content: '◆';
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8B4513;
+            font-size: 1rem;
+        }
+
+        .liuri-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(139, 69, 19, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .liuri-date, .liuri-ganzhii {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .liuri-label {
+            color: #A0522D;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .liuri-stem, .liuri-branch {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #CD853F;
+            background: rgba(205, 133, 63, 0.1);
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            border: 1px solid rgba(205, 133, 63, 0.3);
+        }
+
+        .liuri-desc {
+            color: #8B4513;
+            font-size: 0.9rem;
+        }
+
+        .liuri-analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .liuri-item {
+            background: rgba(139, 69, 19, 0.1);
+            border: 1px solid rgba(139, 69, 19, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .liuri-item-title {
+            color: #A0522D;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .liuri-item-content {
+            color: #CD853F;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* 运势显示 */
+        .fortune-display {
+            text-align: center;
+        }
+
+        .fortune-level {
+            font-size: 3rem;
+            font-family: 'Ma Shan Zheng', cursive;
+            margin-bottom: 1rem;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .fortune-da-ji { background: linear-gradient(45deg, #228B22, #32CD32); color: white; }
+        .fortune-zhong-ji { background: linear-gradient(45deg, #9ACD32, #ADFF2F); color: #2F1B14; }
+        .fortune-xiao-ji { background: linear-gradient(45deg, #FFD700, #FFA500); color: #2F1B14; }
+        .fortune-ping { background: linear-gradient(45deg, #A0522D, #CD853F); color: white; }
+        .fortune-xiao-xiong { background: linear-gradient(45deg, #FF6347, #FF4500); color: white; }
+        .fortune-zhong-xiong { background: linear-gradient(45deg, #DC143C, #B22222); color: white; }
+        .fortune-da-xiong { background: linear-gradient(45deg, #8B0000, #800000); color: white; }
+
+        .fortune-advice {
+            background: rgba(139, 69, 19, 0.1);
+            border-left: 4px solid #CD853F;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .advice-title {
+            color: #CD853F;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .advice-content {
+            line-height: 1.8;
+            color: #D2B48C;
+        }
+
+        /* 颜色推荐 */
+        .color-recommendation {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .color-item {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px solid rgba(139, 69, 19, 0.3);
+        }
+
+        .color-swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            border: 3px solid rgba(245, 222, 179, 0.3);
+        }
+
+        .color-name {
+            font-size: 0.9rem;
+            color: #A0522D;
+            font-weight: 600;
+        }
+
+        /* 底部免责声明 */
+        .footer-disclaimer {
+            text-align: center;
+            padding: 2rem 0 1rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(139, 69, 19, 0.2);
+            color: #8B4513;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .main-title::before,
+            .main-title::after {
+                display: none;
+            }
+            
+            .input-form {
+                grid-template-columns: 1fr;
+            }
+
+            .time-group,
+            .location-group {
+                grid-column: span 1;
+            }
+
+            .time-inputs,
+            .location-inputs {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.8rem;
+            }
+            
+            .bazi-display {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .liuri-analysis-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .liuri-info {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .bazi-input-card,
+            .result-area {
+                padding: 2rem 1.5rem;
+            }
+            
+            .bazi-display {
+                grid-template-columns: 1fr;
+            }
+
+            .liuri-analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .time-inputs,
+            .location-inputs {
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景八卦装饰 -->
+    <div class="bagua-bg">
+        <div class="bagua-symbol bagua-1">☰</div>
+        <div class="bagua-symbol bagua-2">☱</div>
+        <div class="bagua-symbol bagua-3">☲</div>
+        <div class="bagua-symbol bagua-4">☳</div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="main-title">八字运势</h1>
+            <p class="subtitle">传统命理 · 现代解读</p>
+            <p class="description">基于生辰八字与流日分析，为您提供专业的运势指导</p>
+        </header>
+
+        <main class="main-content">
+            <!-- 八字输入卡片 -->
+            <div class="bazi-input-card">
+                <div class="card-content">
+                    <h2 class="card-title">生辰信息</h2>
+                    <p class="card-description">请准确填写您的出生信息，我们将为您生成专属的生辰八字</p>
+                    
+                    <form class="input-form" id="baziForm">
+                        <div class="input-group">
+                            <label class="input-label" for="gender">性别</label>
+                            <select id="gender" class="input-field" required>
+                                <option value="">请选择性别</option>
+                                <option value="male">男</option>
+                                <option value="female">女</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label" for="birthYear">出生年份</label>
+                            <input type="number" id="birthYear" class="input-field" placeholder="如：1990" min="1900" max="2030" required>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label" for="birthMonth">出生月份</label>
+                            <select id="birthMonth" class="input-field" required>
+                                <option value="">请选择月份</option>
+                                <option value="1">正月</option>
+                                <option value="2">二月</option>
+                                <option value="3">三月</option>
+                                <option value="4">四月</option>
+                                <option value="5">五月</option>
+                                <option value="6">六月</option>
+                                <option value="7">七月</option>
+                                <option value="8">八月</option>
+                                <option value="9">九月</option>
+                                <option value="10">十月</option>
+                                <option value="11">十一月</option>
+                                <option value="12">十二月</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label" for="birthDay">出生日期</label>
+                            <input type="number" id="birthDay" class="input-field" placeholder="如：15" min="1" max="31" required>
+                        </div>
+                        
+                        <div class="input-group time-group">
+                            <div class="time-label-row">
+                                <span class="time-main-label">出生时间</span>
+                                <span class="time-hint-inline">如果不记得，可以默认12:00</span>
+                            </div>
+                            <div class="time-inputs">
+                                <div class="time-input-item">
+                                    <label class="time-sub-label" for="birthHour">小时</label>
+                                    <select id="birthHour" class="input-field" required>
+                                        <option value="">选择小时</option>
+                                        <option value="0">00时</option>
+                                        <option value="1">01时</option>
+                                        <option value="2">02时</option>
+                                        <option value="3">03时</option>
+                                        <option value="4">04时</option>
+                                        <option value="5">05时</option>
+                                        <option value="6">06时</option>
+                                        <option value="7">07时</option>
+                                        <option value="8">08时</option>
+                                        <option value="9">09时</option>
+                                        <option value="10">10时</option>
+                                        <option value="11">11时</option>
+                                        <option value="12" selected>12时</option>
+                                        <option value="13">13时</option>
+                                        <option value="14">14时</option>
+                                        <option value="15">15时</option>
+                                        <option value="16">16时</option>
+                                        <option value="17">17时</option>
+                                        <option value="18">18时</option>
+                                        <option value="19">19时</option>
+                                        <option value="20">20时</option>
+                                        <option value="21">21时</option>
+                                        <option value="22">22时</option>
+                                        <option value="23">23时</option>
+                                    </select>
+                                </div>
+                                <div class="time-input-item">
+                                    <label class="time-sub-label" for="birthMinute">分钟</label>
+                                    <select id="birthMinute" class="input-field" required>
+                                        <option value="0" selected>00分</option>
+                                        <option value="1">01分</option>
+                                        <option value="2">02分</option>
+                                        <option value="3">03分</option>
+                                        <option value="4">04分</option>
+                                        <option value="5">05分</option>
+                                        <option value="6">06分</option>
+                                        <option value="7">07分</option>
+                                        <option value="8">08分</option>
+                                        <option value="9">09分</option>
+                                        <option value="10">10分</option>
+                                        <option value="11">11分</option>
+                                        <option value="12">12分</option>
+                                        <option value="13">13分</option>
+                                        <option value="14">14分</option>
+                                        <option value="15">15分</option>
+                                        <option value="16">16分</option>
+                                        <option value="17">17分</option>
+                                        <option value="18">18分</option>
+                                        <option value="19">19分</option>
+                                        <option value="20">20分</option>
+                                        <option value="21">21分</option>
+                                        <option value="22">22分</option>
+                                        <option value="23">23分</option>
+                                        <option value="24">24分</option>
+                                        <option value="25">25分</option>
+                                        <option value="26">26分</option>
+                                        <option value="27">27分</option>
+                                        <option value="28">28分</option>
+                                        <option value="29">29分</option>
+                                        <option value="30">30分</option>
+                                        <option value="31">31分</option>
+                                        <option value="32">32分</option>
+                                        <option value="33">33分</option>
+                                        <option value="34">34分</option>
+                                        <option value="35">35分</option>
+                                        <option value="36">36分</option>
+                                        <option value="37">37分</option>
+                                        <option value="38">38分</option>
+                                        <option value="39">39分</option>
+                                        <option value="40">40分</option>
+                                        <option value="41">41分</option>
+                                        <option value="42">42分</option>
+                                        <option value="43">43分</option>
+                                        <option value="44">44分</option>
+                                        <option value="45">45分</option>
+                                        <option value="46">46分</option>
+                                        <option value="47">47分</option>
+                                        <option value="48">48分</option>
+                                        <option value="49">49分</option>
+                                        <option value="50">50分</option>
+                                        <option value="51">51分</option>
+                                        <option value="52">52分</option>
+                                        <option value="53">53分</option>
+                                        <option value="54">54分</option>
+                                        <option value="55">55分</option>
+                                        <option value="56">56分</option>
+                                        <option value="57">57分</option>
+                                        <option value="58">58分</option>
+                                        <option value="59">59分</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group location-group">
+                            <label class="input-label">出生地点</label>
+                            <div class="location-inputs">
+                                <div class="location-input-item">
+                                    <label class="location-sub-label" for="birthProvince">省份</label>
+                                    <select id="birthProvince" class="input-field" required>
+                                        <option value="">选择省份</option>
+                                        <option value="北京市">北京市</option>
+                                        <option value="天津市">天津市</option>
+                                        <option value="河北省">河北省</option>
+                                        <option value="山西省">山西省</option>
+                                        <option value="内蒙古自治区">内蒙古自治区</option>
+                                        <option value="辽宁省">辽宁省</option>
+                                        <option value="吉林省">吉林省</option>
+                                        <option value="黑龙江省">黑龙江省</option>
+                                        <option value="上海市">上海市</option>
+                                        <option value="江苏省">江苏省</option>
+                                        <option value="浙江省">浙江省</option>
+                                        <option value="安徽省">安徽省</option>
+                                        <option value="福建省">福建省</option>
+                                        <option value="江西省">江西省</option>
+                                        <option value="山东省">山东省</option>
+                                        <option value="河南省">河南省</option>
+                                        <option value="湖北省">湖北省</option>
+                                        <option value="湖南省">湖南省</option>
+                                        <option value="广东省">广东省</option>
+                                        <option value="广西壮族自治区">广西壮族自治区</option>
+                                        <option value="海南省">海南省</option>
+                                        <option value="重庆市">重庆市</option>
+                                        <option value="四川省">四川省</option>
+                                        <option value="贵州省">贵州省</option>
+                                        <option value="云南省">云南省</option>
+                                        <option value="西藏自治区">西藏自治区</option>
+                                        <option value="陕西省">陕西省</option>
+                                        <option value="甘肃省">甘肃省</option>
+                                        <option value="青海省">青海省</option>
+                                        <option value="宁夏回族自治区">宁夏回族自治区</option>
+                                        <option value="新疆维吾尔自治区">新疆维吾尔自治区</option>
+                                        <option value="香港特别行政区">香港特别行政区</option>
+                                        <option value="澳门特别行政区">澳门特别行政区</option>
+                                        <option value="台湾省">台湾省</option>
+                                    </select>
+                                </div>
+                                <div class="location-input-item">
+                                    <label class="location-sub-label" for="birthCity">城市</label>
+                                    <input type="text" id="birthCity" class="input-field" placeholder="如：海淀区" required>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <button type="button" class="generate-btn" onclick="generateBazi()">
+                        生成八字运势
+                    </button>
+                </div>
+            </div>
+
+            <!-- 结果显示区域 -->
+            <div class="result-area" id="resultArea">
+                <h2 class="result-title">您的八字运势</h2>
+                
+                <!-- 基本信息显示 -->
+                <div class="basic-info">
+                    <div style="color: #CD853F; font-size: 1.2rem; margin-bottom: 0.5rem;">
+                        <span id="genderDisplay">性别</span> · <span id="birthDateDisplay">出生日期</span>
+                    </div>
+                    <div style="color: #A0522D; font-size: 1rem; margin-bottom: 0.5rem;">
+                        <span id="birthPlaceDisplay">出生地点</span>
+                    </div>
+                    <div style="color: #8B4513; font-size: 0.9rem;">
+                        对应时辰：<span id="hourNameDisplay">时辰</span>
+                    </div>
+                </div>
+                
+                <!-- 八字显示 -->
+                <div class="bazi-display" id="baziDisplay">
+                    <div class="bazi-pillar">
+                        <div class="pillar-title">年柱</div>
+                        <div class="pillar-chars">
+                            <div class="heavenly-stem" id="yearStem">甲</div>
+                            <div class="earthly-branch" id="yearBranch">子</div>
+                        </div>
+                    </div>
+                    <div class="bazi-pillar">
+                        <div class="pillar-title">月柱</div>
+                        <div class="pillar-chars">
+                            <div class="heavenly-stem" id="monthStem">乙</div>
+                            <div class="earthly-branch" id="monthBranch">丑</div>
+                        </div>
+                    </div>
+                    <div class="bazi-pillar">
+                        <div class="pillar-title">日柱</div>
+                        <div class="pillar-chars">
+                            <div class="heavenly-stem" id="dayStem">丙</div>
+                            <div class="earthly-branch" id="dayBranch">寅</div>
+                        </div>
+                    </div>
+                    <div class="bazi-pillar">
+                        <div class="pillar-title">时柱</div>
+                        <div class="pillar-chars">
+                            <div class="heavenly-stem" id="hourStem">丁</div>
+                            <div class="earthly-branch" id="hourBranch">卯</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 流日分析 -->
+                <div class="liuri-analysis">
+                    <h3 class="liuri-title">今日流日分析</h3>
+                    <div class="liuri-content">
+                        <div class="liuri-info">
+                            <div class="liuri-date">
+                                <span class="liuri-label">今日：</span>
+                                <span id="todayDate">2026年1月7日</span>
+                            </div>
+                            <div class="liuri-ganzhii">
+                                <span class="liuri-label">流日：</span>
+                                <span class="liuri-stem" id="todayStem">甲</span>
+                                <span class="liuri-branch" id="todayBranch">子</span>
+                                <span class="liuri-desc">日</span>
+                            </div>
+                        </div>
+                        
+                        <div class="liuri-analysis-grid">
+                            <div class="liuri-item">
+                                <div class="liuri-item-title">与日主关系</div>
+                                <div class="liuri-item-content" id="liuriRelation">比肩</div>
+                            </div>
+                            <div class="liuri-item">
+                                <div class="liuri-item-title">五行生克</div>
+                                <div class="liuri-item-content" id="liuriWuxing">木木比和</div>
+                            </div>
+                            <div class="liuri-item">
+                                <div class="liuri-item-title">吉凶趋势</div>
+                                <div class="liuri-item-content" id="liuriTrend">平稳</div>
+                            </div>
+                            <div class="liuri-item">
+                                <div class="liuri-item-title">宜忌事项</div>
+                                <div class="liuri-item-content" id="liuriSuggestion">宜：合作交流<br>忌：冒险投资</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 运势显示 -->
+                <div class="fortune-display">
+                    <div class="fortune-level" id="fortuneLevel">中吉</div>
+                    
+                    <div class="fortune-advice">
+                        <div class="advice-title">今日建议</div>
+                        <div class="advice-content" id="adviceContent">
+                            今日运势平稳，适宜处理日常事务。建议保持平和心态，避免冲动决策。
+                        </div>
+                    </div>
+
+                    <div class="fortune-advice">
+                        <div class="advice-title">推荐颜色</div>
+                        <div class="color-recommendation" id="colorRecommendation">
+                            <div class="color-item">
+                                <div class="color-swatch" style="background-color: #8B4513;"></div>
+                                <div class="color-name">棕色</div>
+                            </div>
+                            <div class="color-item">
+                                <div class="color-swatch" style="background-color: #228B22;"></div>
+                                <div class="color-name">绿色</div>
+                            </div>
+                            <div class="color-item">
+                                <div class="color-swatch" style="background-color: #FFD700;"></div>
+                                <div class="color-name">金色</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 底部免责声明 -->
+        <footer class="footer-disclaimer">
+            结果仅供娱乐，凡事都有双面性。
+        </footer>
+    </div>
+
+    <script>
+        // 天干地支数据
+        const heavenlyStems = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+        const earthlyBranches = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+        
+        // 运势等级
+        const fortuneLevels = ['大吉', '中吉', '小吉', '平', '小凶', '中凶', '大凶'];
+        
+        // 颜色推荐数据
+        const colorRecommendations = {
+            '大吉': [
+                { name: '金色', color: '#FFD700' },
+                { name: '红色', color: '#DC143C' },
+                { name: '紫色', color: '#8A2BE2' }
+            ],
+            '中吉': [
+                { name: '绿色', color: '#228B22' },
+                { name: '蓝色', color: '#4169E1' },
+                { name: '青色', color: '#00CED1' }
+            ],
+            '小吉': [
+                { name: '黄色', color: '#FFD700' },
+                { name: '橙色', color: '#FF8C00' },
+                { name: '粉色', color: '#FF69B4' }
+            ],
+            '平': [
+                { name: '棕色', color: '#8B4513' },
+                { name: '米色', color: '#F5DEB3' },
+                { name: '灰色', color: '#808080' }
+            ],
+            '小凶': [
+                { name: '白色', color: '#FFFFFF' },
+                { name: '银色', color: '#C0C0C0' },
+                { name: '浅蓝', color: '#87CEEB' }
+            ],
+            '中凶': [
+                { name: '黑色', color: '#000000' },
+                { name: '深蓝', color: '#191970' },
+                { name: '深绿', color: '#006400' }
+            ],
+            '大凶': [
+                { name: '深红', color: '#8B0000' },
+                { name: '深紫', color: '#4B0082' },
+                { name: '深棕', color: '#654321' }
+            ]
+        };
+
+        // 建议内容
+        const adviceContent = {
+            '大吉': '今日运势极佳，是开展重要事务的绝佳时机。可以大胆尝试新的投资或重要决策，贵人运旺盛，容易得到他人帮助。',
+            '中吉': '今日运势良好，适合推进既定计划。工作上会有不错的进展，人际关系和谐，是稳步前进的好日子。',
+            '小吉': '今日运势平稳向好，适合处理日常事务。虽无大的突破，但各方面都会有小的收获，保持积极心态即可。',
+            '平': '今日运势平稳，宜守不宜攻。专注于巩固现有成果，避免冒险行为，平常心对待各种变化。',
+            '小凶': '今日运势略有波动，需要谨慎行事。避免重要决策，多听取他人意见，保持低调谦逊的态度。',
+            '中凶': '今日运势欠佳，诸事不宜。建议推迟重要事务，多做准备工作，避免与他人发生冲突。',
+            '大凶': '今日运势较为不利，宜静不宜动。最好在家休息，避免外出和重要活动，多做反思和规划。'
+        };
+
+        // 十神关系
+        const tenGods = {
+            '比肩': '比肩', '劫财': '劫财', '食神': '食神', '伤官': '伤官', '偏财': '偏财',
+            '正财': '正财', '七杀': '七杀', '正官': '正官', '偏印': '偏印', '正印': '正印'
+        };
+
+        // 五行属性
+        const wuxingMap = {
+            '甲': '木', '乙': '木', '丙': '火', '丁': '火', '戊': '土',
+            '己': '土', '庚': '金', '辛': '金', '壬': '水', '癸': '水'
+        };
+
+        // 计算流日分析
+        function analyzeLiuri(dayPillar) {
+            const today = new Date();
+            const todayPillar = getDayPillar(today.getFullYear(), today.getMonth() + 1, today.getDate());
+            
+            // 设置今日信息
+            document.getElementById('todayDate').textContent = 
+                `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+            document.getElementById('todayStem').textContent = todayPillar.stem;
+            document.getElementById('todayBranch').textContent = todayPillar.branch;
+
+            // 分析与日主关系
+            const dayMainStem = dayPillar.stem;
+            const todayStem = todayPillar.stem;
+            const relation = getTenGodRelation(dayMainStem, todayStem);
+            document.getElementById('liuriRelation').textContent = relation;
+
+            // 五行生克分析
+            const dayWuxing = wuxingMap[dayMainStem];
+            const todayWuxing = wuxingMap[todayStem];
+            const wuxingRelation = getWuxingRelation(dayWuxing, todayWuxing);
+            document.getElementById('liuriWuxing').textContent = wuxingRelation;
+
+            // 吉凶趋势
+            const trend = getLiuriTrend(relation);
+            document.getElementById('liuriTrend').textContent = trend;
+
+            // 宜忌建议
+            const suggestion = getLiuriSuggestion(relation, wuxingRelation);
+            document.getElementById('liuriSuggestion').innerHTML = suggestion;
+        }
+
+        // 获取十神关系
+        function getTenGodRelation(dayStem, todayStem) {
+            const dayIndex = heavenlyStems.indexOf(dayStem);
+            const todayIndex = heavenlyStems.indexOf(todayStem);
+            
+            if (dayIndex === todayIndex) return '比肩';
+            
+            const diff = (todayIndex - dayIndex + 10) % 10;
+            const relations = ['比肩', '劫财', '食神', '伤官', '偏财', '正财', '七杀', '正官', '偏印', '正印'];
+            return relations[diff];
+        }
+
+        // 获取五行生克关系
+        function getWuxingRelation(dayWuxing, todayWuxing) {
+            if (dayWuxing === todayWuxing) return `${dayWuxing}${todayWuxing}比和`;
+            
+            const shengMap = {
+                '木': '火', '火': '土', '土': '金', '金': '水', '水': '木'
+            };
+            const keMap = {
+                '木': '土', '火': '金', '土': '水', '金': '木', '水': '火'
+            };
+            
+            if (shengMap[dayWuxing] === todayWuxing) return `${dayWuxing}生${todayWuxing}`;
+            if (shengMap[todayWuxing] === dayWuxing) return `${todayWuxing}生${dayWuxing}`;
+            if (keMap[dayWuxing] === todayWuxing) return `${dayWuxing}克${todayWuxing}`;
+            if (keMap[todayWuxing] === dayWuxing) return `${todayWuxing}克${dayWuxing}`;
+            
+            return `${dayWuxing}${todayWuxing}平和`;
+        }
+
+        // 获取流日趋势
+        function getLiuriTrend(relation) {
+            const trendMap = {
+                '比肩': '平稳', '劫财': '竞争', '食神': '顺利', '伤官': '变动',
+                '偏财': '机遇', '正财': '收获', '七杀': '压力', '正官': '责任',
+                '偏印': '思考', '正印': '贵人'
+            };
+            return trendMap[relation] || '平稳';
+        }
+
+        // 获取流日建议
+        function getLiuriSuggestion(relation, wuxingRelation) {
+            const suggestionMap = {
+                '比肩': '宜：合作交流，团队协作<br>忌：独断专行，固执己见',
+                '劫财': '宜：谨慎理财，防范竞争<br>忌：冒险投资，借贷他人',
+                '食神': '宜：创作表达，享受生活<br>忌：过度放纵，懒散怠惰',
+                '伤官': '宜：创新变革，展现才华<br>忌：冲动行事，得罪他人',
+                '偏财': '宜：把握机遇，灵活应变<br>忌：贪心过度，投机取巧',
+                '正财': '宜：稳健投资，勤劳工作<br>忌：好高骛远，不切实际',
+                '七杀': '宜：谨慎行事，化解压力<br>忌：硬碰硬，意气用事',
+                '正官': '宜：遵纪守法，承担责任<br>忌：违规违纪，推卸责任',
+                '偏印': '宜：学习思考，独立思维<br>忌：钻牛角尖，孤僻自闭',
+                '正印': '宜：求学进修，依靠贵人<br>忌：过分依赖，缺乏主见'
+            };
+            return suggestionMap[relation] || '宜：顺其自然<br>忌：强求妄为';
+        }
+        // 参考案例：2025年1月7日01:02 = 乙巳年己丑月辛巳日戊子时
+
+        // 计算年柱 - 使用2025年乙巳年校准
+        function getYearPillar(year, month, day) {
+            let actualYear = year;
+            
+            // 以立春为界（2月4日前算上一年）
+            if (month < 2 || (month === 2 && day < 4)) {
+                actualYear = year - 1;
+            }
+            
+            // 使用2025年乙巳年作为基准校准
+            const baseYear = 2025;
+            const baseStem = 1; // 乙
+            const baseBranch = 5; // 巳
+            
+            const yearDiff = actualYear - baseYear;
+            const stemIndex = (baseStem + yearDiff % 10 + 100) % 10;
+            const branchIndex = (baseBranch + yearDiff % 12 + 120) % 12;
+            
+            return {
+                stem: heavenlyStems[stemIndex],
+                branch: earthlyBranches[branchIndex]
+            };
+        }
+
+        // 计算月柱 - 使用2025年2月戊寅月校准
+        function getMonthPillar(year, month, day) {
+            let actualYear = year;
+            let actualMonth = month;
+            
+            // 考虑立春和节气 - 2月4日左右立春
+            if (month < 2 || (month === 2 && day < 4)) {
+                actualYear = year - 1;
+            }
+            
+            // 节气处理：2月4日后才算寅月
+            if (month === 2 && day >= 4) {
+                actualMonth = 2; // 寅月
+            } else if (month === 1 || (month === 2 && day < 4)) {
+                actualMonth = 1; // 丑月
+                if (month === 1) {
+                    // 1月6日前算上年丑月
+                    if (day < 6) {
+                        actualYear = year - 1;
+                    }
+                }
+            } else if (month > 2) {
+                // 其他月份简化处理：每月6日前算上月
+                if (day < 6) {
+                    actualMonth = month - 1;
+                }
+            }
+            
+            // 使用2025年2月戊寅月作为基准
+            const baseYear = 2025;
+            const baseMonth = 2;
+            const baseStem = 4; // 戊
+            const baseBranch = 2; // 寅
+            
+            const monthDiff = (actualYear - baseYear) * 12 + (actualMonth - baseMonth);
+            const stemIndex = (baseStem + monthDiff % 10 + 100) % 10;
+            const branchIndex = (baseBranch + monthDiff % 12 + 120) % 12;
+            
+            return {
+                stem: heavenlyStems[stemIndex],
+                branch: earthlyBranches[branchIndex]
+            };
+        }
+
+        // 六十甲子表（从甲子开始）
+        const sixtyJiazi = [
+            '甲子', '乙丑', '丙寅', '丁卯', '戊辰', '己巳', '庚午', '辛未', '壬申', '癸酉',
+            '甲戌', '乙亥', '丙子', '丁丑', '戊寅', '己卯', '庚辰', '辛巳', '壬午', '癸未',
+            '甲申', '乙酉', '丙戌', '丁亥', '戊子', '己丑', '庚寅', '辛卯', '壬辰', '癸巳',
+            '甲午', '乙未', '丙申', '丁酉', '戊戌', '己亥', '庚子', '辛丑', '壬寅', '癸卯',
+            '甲辰', '乙巳', '丙午', '丁未', '戊申', '己酉', '庚戌', '辛亥', '壬子', '癸丑',
+            '甲寅', '乙卯', '丙辰', '丁巳', '戊午', '己未', '庚申', '辛酉', '壬戌', '癸亥'
+        ];
+
+        // 计算日柱 - 从乙亥日开始按六十甲子顺序排列
+        function getDayPillar(year, month, day) {
+            // 乙亥在六十甲子中的位置是第11位（从0开始计数）
+            const yiHaiIndex = 11;
+            
+            // 设定一个已知的乙亥日作为基准
+            // 假设某个已知日期是乙亥日，我们从这里开始计算
+            const baseYear = 2025;
+            const baseMonth = 1;
+            const baseDay = 1; // 假设2025年1月1日为起始点
+            
+            // 计算目标日期与基准日期的天数差
+            const baseDate = new Date(baseYear, baseMonth - 1, baseDay);
+            const targetDate = new Date(year, month - 1, day);
+            const daysDiff = Math.floor((targetDate - baseDate) / (1000 * 60 * 60 * 24));
+            
+            // 从乙亥开始，按六十甲子顺序计算
+            // 需要找到2025年1月1日在六十甲子中的位置，然后调整到乙亥
+            // 先计算2025年1月1日的甲子序号，然后调整
+            
+            // 使用公历推算甲子日的公式
+            // 1900年1月1日是甲戌日（第10位，从0开始）
+            const baseYear1900 = 1900;
+            const baseMonth1900 = 1;
+            const baseDay1900 = 1;
+            const baseJiaziIndex1900 = 10; // 甲戌
+            
+            const base1900Date = new Date(baseYear1900, baseMonth1900 - 1, baseDay1900);
+            const days1900ToTarget = Math.floor((targetDate - base1900Date) / (1000 * 60 * 60 * 24));
+            
+            // 计算目标日期在六十甲子中的位置
+            const jiaziIndex = (baseJiaziIndex1900 + days1900ToTarget) % 60;
+            
+            // 获取对应的干支
+            const jiazi = sixtyJiazi[jiaziIndex];
+            const stem = jiazi[0];
+            const branch = jiazi[1];
+            
+            return {
+                stem: stem,
+                branch: branch
+            };
+        }
+
+        // 计算时柱 - 根据即时局应用修正时干算法
+        function getHourPillar(hour, dayPillar) {
+            // 确定时辰地支
+            let branchIndex;
+            if (hour >= 23 || hour < 1) branchIndex = 0; // 子时
+            else if (hour >= 1 && hour < 3) branchIndex = 1; // 丑时
+            else if (hour >= 3 && hour < 5) branchIndex = 2; // 寅时
+            else if (hour >= 5 && hour < 7) branchIndex = 3; // 卯时
+            else if (hour >= 7 && hour < 9) branchIndex = 4; // 辰时
+            else if (hour >= 9 && hour < 11) branchIndex = 5; // 巳时
+            else if (hour >= 11 && hour < 13) branchIndex = 6; // 午时
+            else if (hour >= 13 && hour < 15) branchIndex = 7; // 未时
+            else if (hour >= 15 && hour < 17) branchIndex = 8; // 申时
+            else if (hour >= 17 && hour < 19) branchIndex = 9; // 酉时
+            else if (hour >= 19 && hour < 21) branchIndex = 10; // 戌时
+            else branchIndex = 11; // 亥时
+            
+            // 根据即时局应用结果修正时干算法
+            // 辛日子时应该是戊子时，而不是壬子时
+            const dayStemIndex = heavenlyStems.indexOf(dayPillar.stem);
+            
+            // 修正的时干起始表：甲己起甲，乙庚起丙，丙辛起戊，丁壬起庚，戊癸起壬
+            const hourStemStart = [0, 2, 4, 6, 8, 0, 2, 4, 6, 8]; // 原来的
+            // 修正为正确的时干起始表
+            const correctHourStemStart = [0, 2, 4, 6, 8, 0, 2, 4, 6, 8];
+            
+            // 对于辛日（index=7），子时应该是戊（index=4）
+            // 让我们使用正确的五子元遁公式
+            let stemIndex;
+            if (dayStemIndex === 0 || dayStemIndex === 5) { // 甲日或己日
+                stemIndex = (0 + branchIndex) % 10; // 甲子、乙丑、丙寅...
+            } else if (dayStemIndex === 1 || dayStemIndex === 6) { // 乙日或庚日
+                stemIndex = (2 + branchIndex) % 10; // 丙子、丁丑、戊寅...
+            } else if (dayStemIndex === 2 || dayStemIndex === 7) { // 丙日或辛日
+                stemIndex = (4 + branchIndex) % 10; // 戊子、己丑、庚寅...
+            } else if (dayStemIndex === 3 || dayStemIndex === 8) { // 丁日或壬日
+                stemIndex = (6 + branchIndex) % 10; // 庚子、辛丑、壬寅...
+            } else { // 戊日或癸日
+                stemIndex = (8 + branchIndex) % 10; // 壬子、癸丑、甲寅...
+            }
+            
+            return {
+                stem: heavenlyStems[stemIndex],
+                branch: earthlyBranches[branchIndex]
+            };
+        }
+
+        // 获取时辰名称
+        function getHourName(hour) {
+            const hourNames = ['子时', '丑时', '寅时', '卯时', '辰时', '巳时', '午时', '未时', '申时', '酉时', '戌时', '亥时'];
+            const hourRanges = ['23-01', '01-03', '03-05', '05-07', '07-09', '09-11', '11-13', '13-15', '15-17', '17-19', '19-21', '21-23'];
+            
+            let branchIndex;
+            if (hour >= 23 || hour < 1) branchIndex = 0;
+            else if (hour >= 1 && hour < 3) branchIndex = 1;
+            else if (hour >= 3 && hour < 5) branchIndex = 2;
+            else if (hour >= 5 && hour < 7) branchIndex = 3;
+            else if (hour >= 7 && hour < 9) branchIndex = 4;
+            else if (hour >= 9 && hour < 11) branchIndex = 5;
+            else if (hour >= 11 && hour < 13) branchIndex = 6;
+            else if (hour >= 13 && hour < 15) branchIndex = 7;
+            else if (hour >= 15 && hour < 17) branchIndex = 8;
+            else if (hour >= 17 && hour < 19) branchIndex = 9;
+            else if (hour >= 19 && hour < 21) branchIndex = 10;
+            else branchIndex = 11;
+            
+            return `${hourNames[branchIndex]} (${hourRanges[branchIndex]}点)`;
+        }
+
+        // 生成八字
+        function generateBazi() {
+            // 清除之前的错误状态
+            clearErrorStates();
+            
+            // 获取输入值
+            const gender = document.getElementById('gender').value;
+            const year = parseInt(document.getElementById('birthYear').value);
+            const month = parseInt(document.getElementById('birthMonth').value);
+            const day = parseInt(document.getElementById('birthDay').value);
+            const hour = parseInt(document.getElementById('birthHour').value);
+            const minute = parseInt(document.getElementById('birthMinute').value);
+            const province = document.getElementById('birthProvince').value;
+            const city = document.getElementById('birthCity').value;
+
+            // 验证输入并标记错误字段
+            let hasError = false;
+            const errorFields = [];
+
+            if (!gender) {
+                markFieldError('gender');
+                errorFields.push('性别');
+                hasError = true;
+            }
+            if (!year || isNaN(year)) {
+                markFieldError('birthYear');
+                errorFields.push('出生年份');
+                hasError = true;
+            }
+            if (!month || isNaN(month)) {
+                markFieldError('birthMonth');
+                errorFields.push('出生月份');
+                hasError = true;
+            }
+            if (!day || isNaN(day)) {
+                markFieldError('birthDay');
+                errorFields.push('出生日期');
+                hasError = true;
+            }
+            if (isNaN(hour)) {
+                markFieldError('birthHour');
+                errorFields.push('出生小时');
+                hasError = true;
+            }
+            if (isNaN(minute)) {
+                markFieldError('birthMinute');
+                errorFields.push('出生分钟');
+                hasError = true;
+            }
+            if (!province) {
+                markFieldError('birthProvince');
+                errorFields.push('出生省份');
+                hasError = true;
+            }
+            if (!city) {
+                markFieldError('birthCity');
+                errorFields.push('出生城市');
+                hasError = true;
+            }
+
+            if (hasError) {
+                alert(`请填写完整的出生信息，缺少：${errorFields.join('、')}`);
+                return;
+            }
+
+            try {
+                // 计算四柱
+                const yearPillar = getYearPillar(year, month, day);
+                const monthPillar = getMonthPillar(year, month, day);
+                const dayPillar = getDayPillar(year, month, day);
+                const hourPillar = getHourPillar(hour, dayPillar);
+
+                // 设置基本信息显示
+                document.getElementById('genderDisplay').textContent = gender === 'male' ? '男' : '女';
+                document.getElementById('birthDateDisplay').textContent = `${year}年${month}月${day}日 ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                document.getElementById('birthPlaceDisplay').textContent = `${province} ${city}`;
+                document.getElementById('hourNameDisplay').textContent = getHourName(hour);
+
+                // 设置八字显示
+                document.getElementById('yearStem').textContent = yearPillar.stem;
+                document.getElementById('yearBranch').textContent = yearPillar.branch;
+                document.getElementById('monthStem').textContent = monthPillar.stem;
+                document.getElementById('monthBranch').textContent = monthPillar.branch;
+                document.getElementById('dayStem').textContent = dayPillar.stem;
+                document.getElementById('dayBranch').textContent = dayPillar.branch;
+                document.getElementById('hourStem').textContent = hourPillar.stem;
+                document.getElementById('hourBranch').textContent = hourPillar.branch;
+
+                // 分析流日
+                analyzeLiuri(dayPillar);
+
+                // 计算今日运势（简化算法）
+                const today = new Date();
+                const fortuneIndex = (today.getDate() + day) % 7;
+                const fortuneLevel = fortuneLevels[fortuneIndex];
+
+                // 设置运势显示
+                const fortuneLevelElement = document.getElementById('fortuneLevel');
+                fortuneLevelElement.textContent = fortuneLevel;
+                fortuneLevelElement.className = `fortune-level fortune-${getFortuneLevelClass(fortuneLevel)}`;
+
+                // 设置建议内容
+                document.getElementById('adviceContent').textContent = adviceContent[fortuneLevel];
+
+                // 设置颜色推荐
+                const colors = colorRecommendations[fortuneLevel];
+                const colorContainer = document.getElementById('colorRecommendation');
+                colorContainer.innerHTML = colors.map(color => `
+                    <div class="color-item">
+                        <div class="color-swatch" style="background-color: ${color.color};"></div>
+                        <div class="color-name">${color.name}</div>
+                    </div>
+                `).join('');
+
+                // 显示结果区域
+                document.getElementById('resultArea').style.display = 'block';
+                
+                // 滚动到结果区域
+                document.getElementById('resultArea').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+            } catch (error) {
+                alert('计算八字时出现错误，请检查输入信息');
+                console.error('八字计算错误:', error);
+            }
+        }
+
+        // 标记字段错误
+        function markFieldError(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.classList.add('error');
+            }
+        }
+
+        // 清除所有错误状态
+        function clearErrorStates() {
+            const fields = ['gender', 'birthYear', 'birthMonth', 'birthDay', 'birthHour', 'birthMinute', 'birthProvince', 'birthCity'];
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.classList.remove('error');
+                }
+            });
+        }
+
+        // 字段输入时清除错误状态
+        function clearFieldError(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.classList.remove('error');
+            }
+        }
+
+        // 获取运势等级的CSS类名
+        function getFortuneLevelClass(level) {
+            const classMap = {
+                '大吉': 'da-ji',
+                '中吉': 'zhong-ji',
+                '小吉': 'xiao-ji',
+                '平': 'ping',
+                '小凶': 'xiao-xiong',
+                '中凶': 'zhong-xiong',
+                '大凶': 'da-xiong'
+            };
+            return classMap[level] || 'ping';
+        }
+
+        // 表单验证和错误状态清除
+        document.getElementById('baziForm').addEventListener('input', function(e) {
+            const target = e.target;
+            
+            // 清除当前字段的错误状态
+            clearFieldError(target.id);
+            
+            // 原有的验证逻辑
+            if (target.type === 'number') {
+                if (target.id === 'birthYear') {
+                    if (target.value < 1900 || target.value > 2030) {
+                        target.style.borderColor = '#DC143C';
+                    } else {
+                        target.style.borderColor = 'rgba(139, 69, 19, 0.3)';
+                    }
+                }
+                if (target.id === 'birthDay') {
+                    if (target.value < 1 || target.value > 31) {
+                        target.style.borderColor = '#DC143C';
+                    } else {
+                        target.style.borderColor = 'rgba(139, 69, 19, 0.3)';
+                    }
+                }
+            }
+            
+            // 下拉选择验证
+            if (target.tagName === 'SELECT') {
+                if (target.value) {
+                    target.style.borderColor = 'rgba(139, 69, 19, 0.3)';
+                } else {
+                    target.style.borderColor = '#DC143C';
+                }
+            }
+        });
+
+        // 为所有输入字段添加change事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            const fields = ['gender', 'birthYear', 'birthMonth', 'birthDay', 'birthHour', 'birthMinute', 'birthProvince', 'birthCity'];
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('change', function() {
+                        clearFieldError(fieldId);
+                    });
+                    field.addEventListener('input', function() {
+                        clearFieldError(fieldId);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
